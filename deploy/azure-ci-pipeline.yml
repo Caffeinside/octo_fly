@@ -1,0 +1,49 @@
+trigger:
+- master
+
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  dockerRegistryServiceConnection: 'docker_registry_service_connection'
+  imageRepository: 'octo_fly_app'
+  containerRegistry: 'docker_registry'
+  dockerfilePath: '$(Build.SourcesDirectory)/docker/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+jobs:
+- job: Test
+  displayName: Test
+
+  steps:
+  - script: |
+      make create_environment
+      export PATH="/usr/share/miniconda/bin:$PATH"
+      echo $PATH
+      source activate octo_fly
+      echo $(which python)
+      python --version
+      make requirements
+      echo Running unit tests
+      pytest tests
+    displayName: Install requirements and run unit tests
+
+- job: Build
+  displayName: Build
+  dependsOn: Test
+  condition: succeeded()
+  steps:
+  - task: Docker@2
+    displayName: Build and push an image to container registry
+    inputs:
+      containerRegistry: $(dockerRegistryServiceConnection)
+      repository: $(imageRepository)
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      buildContext: './'
+      tags: |
+        $(tag)
+        latest

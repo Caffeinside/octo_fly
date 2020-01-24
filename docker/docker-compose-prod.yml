@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+    web_app:
+        image: docker_registry/octo_fly_app:${APP_VERSION}
+        restart: always
+        ports:
+          - "8501:8501"

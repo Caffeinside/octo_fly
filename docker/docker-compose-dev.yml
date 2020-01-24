@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+    web_app:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+        container_name: octo_fly_app
+        image: docker_registry/octo_fly_app
+        restart: always
+        ports:
+          - "8501:8501"
