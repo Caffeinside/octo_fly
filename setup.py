@@ -7,9 +7,7 @@ setup(
     packages=find_packages(),
     setup_requires=['setuptools_scm'],
     python_requires='~=3.7',
-    install_requires=['python-dotenv',
-                      # example librairies
-                      'streamlit', 'pandas', 'numpy', 'altair'],
+    install_requires=['python-dotenv', 'pandas', 'numpy'],
     extras_require={'tests': ['pytest']},
     version='0.1.0'
 )
