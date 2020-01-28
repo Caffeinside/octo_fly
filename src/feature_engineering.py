@@ -20,7 +20,7 @@ def create_columns_from_date(flights: pd.DataFrame) -> pd.DataFrame:
     return flights_new.drop(columns=['date'])
 
 
-def convert_latitude_longitude_to_float(flights: pd.DataFrame) -> pd.DataFrame:
+def convert_latitudes_and_longitudes(flights: pd.DataFrame) -> pd.DataFrame:
     """Convert the latitude and longitude columns from string to float.
 
     Args:
