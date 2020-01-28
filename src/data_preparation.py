@@ -52,7 +52,8 @@ def merge_flights_with_airlines(flights: pd.DataFrame, airlines: pd.DataFrame) -
     """
     flights_with_airlines = pd.merge(flights, airlines, how='left',
                                      left_on='compagnie_aerienne', right_on='compagnies_code')
-    flights_with_airlines = flights_with_airlines.drop(columns=['compagnie_aerienne'])
+    flights_with_airlines = flights_with_airlines.drop(columns=['compagnies_code'])
+    flights_with_airlines = flights_with_airlines.rename(columns={'compagnie_aerienne': 'compagnie_code'})
     return flights_with_airlines.reset_index(drop=True)
 
 
@@ -69,7 +70,8 @@ def merge_flights_with_departures_airports(flights: pd.DataFrame, departures_air
     """
     flights_with_departures = pd.merge(flights, departures_airports, how='left',
                                        left_on='aeroport_depart', right_on='depart_code_iata')
-    flights_with_departures = flights_with_departures.drop(columns=['aeroport_depart'])
+    flights_with_departures = flights_with_departures.drop(columns=['depart_code_iata'])
+    flights_with_departures = flights_with_departures.rename(columns={'aeroport_depart': 'depart_code_iata'})
     return flights_with_departures.reset_index(drop=True)
 
 
@@ -86,7 +88,8 @@ def merge_flights_with_arrivals_airports(flights: pd.DataFrame, arrivals_airport
     """
     flights_with_arrivals = pd.merge(flights, arrivals_airports, how='left',
                                      left_on='aeroport_arrivee', right_on='arrivee_code_iata')
-    flights_with_arrivals = flights_with_arrivals.drop(columns=['aeroport_arrivee'])
+    flights_with_arrivals = flights_with_arrivals.drop(columns=['arrivee_code_iata'])
+    flights_with_arrivals = flights_with_arrivals.rename(columns={'aeroport_arrivee': 'arrivee_code_iata'})
     return flights_with_arrivals.reset_index(drop=True)
 
 
