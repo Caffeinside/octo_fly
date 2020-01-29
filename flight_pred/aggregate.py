@@ -11,8 +11,9 @@ def aggregate_data(flights: pd.DataFrame, airlines: pd.DataFrame, airports: pd.D
     flights_new_col = rename_dataframe_columns(flights)
     airlines_new_col = rename_dataframe_columns(airlines, 'compagnies_')
     fuel_new_col = rename_dataframe_columns(fuel, 'fuel_')
-    departures_airports = rename_dataframe_columns(airports, 'depart_')
-    arrivals_airports = rename_dataframe_columns(airports, 'arrivee_')
+    airports_no_duplicates = airports.drop_duplicates(subset=['CODE IATA'], keep='last')
+    departures_airports = rename_dataframe_columns(airports_no_duplicates, 'depart_')
+    arrivals_airports = rename_dataframe_columns(airports_no_duplicates, 'arrivee_')
     fuel_time_series = prepare_fuel_time_series(fuel_new_col)
 
     flights_new_col['date'] = pd.to_datetime(flights_new_col['date'], format='%d/%m/%Y')
