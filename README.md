@@ -1,7 +1,7 @@
-OCTO Fly
-==============================
+Welcome to OCTO Fly's documentation!
+====================================
 
-OCTO Fly project created for the AI certification
+OCTO Fly project created for the AI certification !
 
 Project Organization
 ------------
