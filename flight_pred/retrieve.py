@@ -3,10 +3,8 @@ import sqlite3
 import pandas as pd
 from prefect import task
 
-db_1_path = '../data/raw/batch_1.db'
-db_2_path = '../data/raw/batch_2.db'
-
 # TODO: can we include DB connections in prefect?
+
 
 @task
 def get_flights_data(db_1_path: str, db_2_path: str) -> pd.DataFrame:
