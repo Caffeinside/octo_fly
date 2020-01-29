@@ -1,7 +1,7 @@
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
 
-from src.feature_engineering import create_columns_from_date, convert_latitudes_and_longitudes, \
+from flight_pred.feature_engineering import create_columns_from_date, convert_latitudes_and_longitudes, \
     create_hour_column_from_departure_time
 
 

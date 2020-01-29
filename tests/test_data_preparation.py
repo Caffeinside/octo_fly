@@ -2,8 +2,9 @@ import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from src.data_preparation import rename_dataframe_columns, prepare_fuel_time_series, merge_flights_with_airlines, \
-    merge_flights_with_departures_airports, merge_flights_with_arrivals_airports, merge_flights_with_fuel
+from flight_pred.data_preparation import rename_dataframe_columns, prepare_fuel_time_series, \
+    merge_flights_with_airlines, merge_flights_with_departures_airports, merge_flights_with_arrivals_airports, \
+    merge_flights_with_fuel
 
 
 def test_rename_dataframe_columns_should_remove_spaces_and_convert_string_to_lowercase_when_there_is_no_prefix():
