@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal, assert_series_equal
 
-from flight_pred.data_preparation import rename_dataframe_columns, prepare_fuel_time_series, \
+from flight_pred.data_aggregation import rename_dataframe_columns, prepare_fuel_time_series, \
     merge_flights_with_airlines, merge_flights_with_departures_airports, merge_flights_with_arrivals_airports, \
     merge_flights_with_fuel
 

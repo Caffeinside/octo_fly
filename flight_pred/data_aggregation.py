@@ -1,6 +1,28 @@
 import numpy as np
 import pandas as pd
 
+from prefect import task
+
+
+@task
+def aggregate_data(flights: pd.DataFrame, airlines: pd.DataFrame, airports: pd.DataFrame,
+                   fuel: pd.DataFrame) -> pd.DataFrame:
+
+    flights_new_col = rename_dataframe_columns(flights)
+    airlines_new_col = rename_dataframe_columns(airlines, 'compagnies_')
+    fuel_new_col = rename_dataframe_columns(fuel, 'fuel_')
+    departures_airports = rename_dataframe_columns(airports, 'depart_')
+    arrivals_airports = rename_dataframe_columns(airports, 'arrivee_')
+    fuel_time_series = prepare_fuel_time_series(fuel_new_col)
+
+    flights_new_col['date'] = pd.to_datetime(flights_new_col['date'], format='%d/%m/%Y')
+    flights_with_airlines = merge_flights_with_airlines(flights_new_col, airlines_new_col)
+    flights_with_departures = merge_flights_with_departures_airports(flights_with_airlines, departures_airports)
+    flights_with_arrivals = merge_flights_with_arrivals_airports(flights_with_departures, arrivals_airports)
+    flights_data = merge_flights_with_fuel(flights_with_arrivals, fuel_time_series)
+
+    return flights_data
+
 
 def rename_dataframe_columns(df: pd.DataFrame, prefix='') -> pd.DataFrame:
     """Rename the DataFrame's columns following the project's naming convention.
