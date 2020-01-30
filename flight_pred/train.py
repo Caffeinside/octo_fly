@@ -1,8 +1,12 @@
+import pickle
+
 import pandas as pd
 from prefect import task
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
+
+from config import PROJECT_HOME
 
 TARGET_COLUMN = "retard_a_l'arrivee"
 
@@ -17,7 +21,15 @@ def train_and_evaluate(flights: pd.DataFrame):
     model = RandomForestClassifier(n_estimators=10, max_depth=10, n_jobs=-1, verbose=2, random_state=42)
     model.fit(X_train, y_train)
 
-    accuracy = accuracy_score(y_test, model.predict_proba(X_test).round())
+    pickle.dump(model, open(PROJECT_HOME/'models/model_0.pkl', 'wb'))
+
+    y_predicted = model.predict(X_test)
+
+    print(y_predicted)
+
+    print(y_test)
+
+    accuracy = accuracy_score(y_test, y_predicted.round())
     print(f'accuracy: {accuracy}')
 
     return model

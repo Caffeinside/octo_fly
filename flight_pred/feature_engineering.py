@@ -11,16 +11,16 @@ POSSIBLE_LEAK_COLUMNS = ['heure_de_depart', 'retart_de_depart', 'temps_de_deplac
 
 DUPLICATED_DATA = ['compagnies_compagnie', 'depart_nom', 'arrivee_nom']
 
+CATEGORICAL_COLUMNS = ['code_avion', 'compagnie_code', 'depart_code_iata', 'depart_lieu', 'depart_pays',
+                       'arrivee_code_iata', 'arrivee_lieu', 'arrivee_pays']
+
 OTHER_COLUMNS_TO_DROP = ['depart_prix_retard_premiere_20_minutes',
                          'depart_pris_retard_pour_chaque_minute_apres_10_minutes',
                          'arrivee_prix_retard_premiere_20_minutes',
                          'arrivee_pris_retard_pour_chaque_minute_apres_10_minutes',
                          'identifiant']
 
-COLUMNS_TO_DROP = POSSIBLE_LEAK_COLUMNS + DUPLICATED_DATA + OTHER_COLUMNS_TO_DROP
-
-CATEGORICAL_COLUMNS = ['code_avion', 'compagnies_code', 'depart_code_iata', 'depart_lieu', 'depart_pays',
-                       'arrivee_code_iata', 'arrivee_lieu', 'arrivee_pays']
+COLUMNS_TO_DROP = POSSIBLE_LEAK_COLUMNS + DUPLICATED_DATA + CATEGORICAL_COLUMNS + OTHER_COLUMNS_TO_DROP
 
 
 @task
