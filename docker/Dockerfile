@@ -10,5 +10,5 @@ COPY . /octo_fly
 WORKDIR /octo_fly
 
 RUN conda create --name octo_fly python==3.7
-RUN conda activate octo_fly
+RUN source activate octo_fly
 RUN pip install .
