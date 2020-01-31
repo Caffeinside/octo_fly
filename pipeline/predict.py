@@ -9,7 +9,7 @@ from flight_pred.feature_engineering import prepare_features
 from flight_pred.modeling import get_predictions, save_flights_with_predictions, add_predictions_to_flights_data
 from flight_pred.retrieve import get_flights_data, get_airports_data, get_airlines_data, get_fuel_data
 
-schedule = IntervalSchedule(interval=timedelta(minutes=1))
+schedule = IntervalSchedule(interval=timedelta(minutes=10))
 
 with Flow('predict', schedule) as predict:
 

@@ -1,12 +1,22 @@
 version: '3'
 
 services:
-    web_app:
+    streamlit:
         build:
             context: ..
             dockerfile: docker/Dockerfile
-        container_name: octo_fly_app
-        image: docker_registry/octo_fly_app
+        container_name: octo_fly_streamlit
+        image: docker_registry/octo_fly_streamlit
         restart: always
         ports:
           - "8501:8501"
+        command: streamlit run app/display_predictions.py
+
+    prefect:
+        build:
+            context: ..
+            dockerfile: docker/Dockerfile
+        container_name: octo_fly_prefect
+        image: docker_registry/octo_fly_prefect
+        restart: always
+        command: python pipeline/predict.py
