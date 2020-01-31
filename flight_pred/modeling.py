@@ -30,4 +30,10 @@ def train_and_evaluate(flights: pd.DataFrame) -> pickle:
 def get_predictions(flights: pd.DataFrame) -> pd.DataFrame:
     model = pickle.load(open(PROJECT_HOME/'models/model_0.pkl', 'rb'))
     predictions = model.predict_proba(flights)
-    return predictions
+    flights['predictions'] = [prediction[1] for prediction in predictions]
+    return flights
+
+
+@task
+def save_predictions(predictions: pd.DataFrame):
+    predictions.to_csv(PROJECT_HOME/'data/processed/predictions.csv', index=False)

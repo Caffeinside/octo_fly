@@ -1,20 +1,16 @@
 FROM continuumio/miniconda3:latest
 SHELL ["/bin/bash", "-c"]
 
+RUN mkdir /octo_fly
+
 EXPOSE 8501
 
-RUN apt-get update -y
-RUN apt-get install -y build-essential
-RUN mkdir /app
+COPY . /octo_fly
 
-COPY setup.py /app/setup.py
-COPY Makefile /app/Makefile
-COPY src /app/src
+WORKDIR /octo_fly
 
-WORKDIR /app
+RUN conda create --name octo_fly python==3.7
+RUN conda activate octo_fly
+RUN pip install .
 
-RUN make create_environment
-RUN source activate octo_fly
-RUN pip install -e .
-
-CMD streamlit run src/example.py
+CMD streamlit run app/display_predictions.py
