@@ -6,12 +6,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
-from config import PROJECT_HOME, TARGET_COLUMN
+from config import PROJECT_HOME, TARGET_COLUMN, ID_COLUMN
 
 
 @task
 def train_and_evaluate(flights: pd.DataFrame) -> pickle:
-    X = flights.drop(columns=[TARGET_COLUMN])
+    X = flights.drop(columns=[TARGET_COLUMN, ID_COLUMN])
     y = flights[TARGET_COLUMN].map(lambda x: 1 if x > 0 else 0)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, random_state=42)
 
@@ -29,11 +29,18 @@ def train_and_evaluate(flights: pd.DataFrame) -> pickle:
 @task
 def get_predictions(flights: pd.DataFrame) -> pd.DataFrame:
     model = pickle.load(open(PROJECT_HOME/'models/model_0.pkl', 'rb'))
-    predictions = model.predict_proba(flights)
-    flights['predictions'] = [prediction[1] for prediction in predictions]
-    return flights
+    predictions = model.predict_proba(flights.drop(columns=[ID_COLUMN]))
+    flights['prediction'] = [prediction[1] for prediction in predictions]
+    return flights[[ID_COLUMN, 'prediction']]
 
 
 @task
-def save_predictions(predictions: pd.DataFrame):
-    predictions.to_csv(PROJECT_HOME/'data/processed/predictions.csv', index=False)
+def add_predictions_to_flights_data(flights: pd.DataFrame, predictions: pd.DataFrame) -> pd.DataFrame:
+    flights_with_predictions = pd.merge(flights, predictions, how='left',
+                                        left_on='identifiant', right_on='identifiant')
+    return flights_with_predictions.sort_values(['date', 'depart_programme'], ascending=[False, False])
+
+
+@task
+def save_flights_with_predictions(flights_with_predictions: pd.DataFrame):
+    flights_with_predictions.to_csv(PROJECT_HOME/'data/processed/predictions.csv', index=False)
