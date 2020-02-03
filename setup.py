@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     python_requires='~=3.7',
     install_requires=['pandas==0.25.3',
-                      'numpynumpy==1.18.1',
+                      'numpy==1.18.1',
                       'prefect==0.9.1',
                       'streamlit==0.54.0',
                       'scikit-learn==0.19.2'],
