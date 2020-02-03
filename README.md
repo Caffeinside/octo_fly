@@ -19,7 +19,7 @@ Project Organization
     │
     │
     ├── deploy
-    │   └── azure-pipeline.yml       <- CI/CD pipeline
+    │   └── pipeline.yml                <- CI/CD pipeline
     │   
     │
     ├── docker
@@ -54,6 +54,6 @@ Project Organization
 
 --------
 
-<p><small>*You can give a look at <a target="_blank" href="https://github.com/octo-technology/ddapi">Data Driver</a>.</small><p>
+<p><small>*You can give a look at <a target="_blank" href="https://docs.prefect.io/">Prefect</a>.</small><p>
 
 <p>Project based on the <a target="_blank" href="https://github.com/Caffeinside/cookiecutter-data-science-indus">cookiecutter data science industrialization project template</a>.</p>
