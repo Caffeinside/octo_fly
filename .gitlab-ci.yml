@@ -26,7 +26,7 @@ services:
   - docker:19.03.1-dind
 
 before_script:
-  - apk update && apk add python && apk add --update py-pip
+  - apk update && apk add python3-dev && apk add --update py-pip
   - pip install docker-compose
   - docker info
   - docker-compose version
