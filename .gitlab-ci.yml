@@ -26,8 +26,9 @@ services:
   - docker:19.03.1-dind
 
 before_script:
-  - sudo apt-get update && sudo apt-get install -y python-pip
-  - sudo pip install docker-compose
+  - apt-get update && apt-get install -y python-pip
+  - pip install docker-compose
+  - docker info
   - docker-compose version
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
