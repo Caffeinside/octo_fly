@@ -1,4 +1,4 @@
-image: docker/compose:1.25.0-rc1
+image: tmaier/docker-compose:17.06
 
 variables:
   # When using dind service, we need to instruct docker, to talk with
@@ -23,10 +23,9 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 services:
-  - docker:19.03.1-dind
+  - docker:dind
 
 before_script:
-  - apk update && apk add python && apk add --update py-pip
   - docker info
   - docker-compose version
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
