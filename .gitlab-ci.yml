@@ -1,0 +1,75 @@
+image: docker:19.03.1
+
+variables:
+  # When using dind service, we need to instruct docker, to talk with
+  # the daemon started inside of the service. The daemon is available
+  # with a network connection instead of the default
+  # /var/run/docker.sock socket. docker:19.03.1 does this automatically
+  # by setting the DOCKER_HOST in
+  # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03.1/docker-entrypoint.sh#L23-L29
+  #
+  # The 'docker' hostname is the alias of the service container as described at
+  # https://docs.gitlab.com/ee/ci/docker/using_docker_images.html#accessing-the-services.
+  #
+  # Note that if you're using the Kubernetes executor, the variable
+  # should be set to tcp://localhost:2376 because of how the
+  # Kubernetes executor connects services to the job container
+  # DOCKER_HOST: tcp://localhost:2376
+  #
+  # Specify to Docker where to create the certificates, Docker will
+  # create them automatically on boot, and will create
+  # `/certs/client` that will be shared between the service and job
+  # container, thanks to volume mount from config.toml
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:19.03.1-dind
+
+before_script:
+  - docker info
+  - docker-compose --version
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+stages:
+  - test
+  - build
+
+install_requirements:
+  stage: test
+  script:
+    - conda create --name octo_fly python=3.7 -y
+    - export PATH="/usr/share/miniconda/bin:$PATH"
+    - source activate octo_fly
+    - pip install -e .[tests]
+  only:
+    - master
+    - prod
+
+run_unit_tests:
+  stage: test
+  script:
+    - export PATH="/usr/share/miniconda/bin:$PATH"
+    - source activate octo_fly
+    - pytest tests
+  only:
+    - master
+    - prod
+
+build_images:
+  stage: build
+  script:
+    - docker-compose -f docker/docker-compose-dev.yml build
+  only:
+    - master
+    - prod
+
+push_images_to_registry:
+  stage: build
+  script:
+    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_streamlit:$CI_COMMIT_SHA
+    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_streamlit:latest
+    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_prefect:$CI_COMMIT_SHA
+    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_prefect:latest
+  only:
+    - master
+    - prod
