@@ -1,4 +1,4 @@
-image: docker:19.03.1
+image: docker/compose:1.25.0-rc1
 
 variables:
   # When using dind service, we need to instruct docker, to talk with
@@ -26,8 +26,7 @@ services:
   - docker:19.03.1-dind
 
 before_script:
-  - apk update && apk add python3-dev && apk add --update py-pip
-  - pip install docker-compose
+  - apk update && apk add python && apk add --update py-pip
   - docker info
   - docker-compose version
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
