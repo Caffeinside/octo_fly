@@ -1,13 +1,13 @@
 version: '3'
 services:
     streamlit:
-        image: docker_registry/octo_fly_streamlit:${APP_VERSION}
+        image: dslabocto.azurecr.io/octo_fly_streamlit:${APP_VERSION}
         restart: always
         ports:
           - "8501:8501"
         command: streamlit run app/display_predictions.py
 
     prefect:
-        image: docker_registry/octo_fly_prefect:${APP_VERSION}
+        image: dslabocto.azurecr.io/octo_fly_prefect:${APP_VERSION}
         restart: always
         command: python pipeline/predict.py
