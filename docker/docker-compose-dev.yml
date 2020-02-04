@@ -3,8 +3,8 @@ version: '3'
 services:
     streamlit:
         build:
-            context: ""
-            dockerfile: ./Dockerfile
+            context: ..
+            dockerfile: docker/Dockerfile
         container_name: octo_fly_streamlit
         image: docker_registry/octo_fly_streamlit
         restart: always
@@ -14,8 +14,8 @@ services:
 
     prefect:
         build:
-            context: ""
-            dockerfile: ./Dockerfile
+            context: ..
+            dockerfile: docker/Dockerfile
         container_name: octo_fly_prefect
         image: docker_registry/octo_fly_prefect
         restart: always
