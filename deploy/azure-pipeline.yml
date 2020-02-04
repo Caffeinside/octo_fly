@@ -1,0 +1,102 @@
+trigger:
+- master
+- prod
+
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+variables:
+  dockerRegistryServiceConnection: 'dslabOcto'
+  imageRepository: 'octo_fly'
+  containerRegistry: 'dslabocto.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/docker/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    deployServerServiceConnection: 'BASA-dslab-webapp-dev'
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/prod') }}:
+    deployServerServiceConnection: 'BASA-dslab-webapp-prod'
+
+
+jobs:
+- job: Test
+  displayName: Test
+
+  steps:
+  - script: |
+      conda create --name octo_fly python=3.7 -y
+      export PATH="/usr/share/miniconda/bin:$PATH"
+      source activate octo_fly
+      pip install -e .[tests]
+    displayName: Install requirements
+  - script: |
+      export PATH="/usr/share/miniconda/bin:$PATH"
+      source activate octo_fly
+      pytest tests
+    displayName: Run unit tests
+
+- job: Build
+  displayName: Build and push
+  dependsOn: Test
+  condition: succeeded()
+  steps:
+  - task: Docker@2
+    displayName: Build and push an image to container registry
+    inputs:
+      containerRegistry: '$(dockerRegistryServiceConnection)'
+      repository: '$(imageRepository)'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      buildContext: './'
+      tags: |
+        $(tag)
+        latest
+
+#- job: Deploy
+#  displayName: Deploy
+#  dependsOn: Build
+#  condition: succeeded()
+#  steps:
+#    - task: SSH@0
+#      displayName: 'Stop previous version'
+#      inputs:
+#        sshEndpoint: $(deployServerServiceConnection)
+#        runOptions: 'commands'
+#        commands: |
+#          cd .
+#          APP_VERSION=latest docker-compose -f docker-compose-prod.yml stop -t 30
+#        failOnStdErr: false
+#
+#    - task: CopyFilesOverSSH@0
+#      displayName: 'Publish file on production server'
+#      inputs:
+#        sshEndpoint: $(deployServerServiceConnection)
+#        sourceFolder: ./docker
+#        contents: docker-compose-prod.yml
+#        targetFolder: .
+#      condition: succeededOrFailed()
+#
+#    - task: SSH@0
+#      displayName: 'Pull new version'
+#      inputs:
+#        sshEndPoint: $(deployServerServiceConnection)
+#        runOptions: 'inline'
+#        failOnStdErr: false
+#        inline: |
+#          mkdir -p .
+#          cd .
+#          docker login $(containerRegistry) -u $(AZURE_REGISTRY_USER) -p $(AZURE_REGISTRY_PASSWORD)
+#          APP_VERSION=latest docker-compose -f docker-compose-prod.yml pull
+#
+#    - task: SSH@0
+#      displayName: 'Start service'
+#      inputs:
+#        sshEndPoint: $(deployServerServiceConnection)
+#        runOptions: 'inline'
+#        failOnStdErr: false
+#        inline: |
+#          cd .
+#          APP_VERSION=latest docker-compose -f docker-compose-prod.yml up -d
