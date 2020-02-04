@@ -1,4 +1,4 @@
-image: tmaier/docker-compose:17.06
+image: docker:19.03.1
 
 variables:
   # When using dind service, we need to instruct docker, to talk with
@@ -23,11 +23,10 @@ variables:
   DOCKER_TLS_CERTDIR: "/certs"
 
 services:
-  - docker:dind
+  - docker:19.03.1-dind
 
 before_script:
   - docker info
-  - docker-compose version
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 stages:
@@ -58,7 +57,7 @@ run_unit_tests:
 build_images:
   stage: build
   script:
-    - docker-compose -f docker/docker-compose-dev.yml build
+    - docker build --tag ${CI_REGISTRY_IMAGE}/octo_fly:$CI_COMMIT_SHA --tag ${CI_REGISTRY_IMAGE}/octo_fly:latest
   only:
     - master
     - prod
@@ -66,10 +65,8 @@ build_images:
 push_images_to_registry:
   stage: build
   script:
-    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_streamlit:$CI_COMMIT_SHA
-    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_streamlit:latest
-    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_prefect:$CI_COMMIT_SHA
-    - docker push ${CI_REGISTRY_IMAGE}/octo_fly_prefect:latest
+    - docker push ${CI_REGISTRY_IMAGE}/octo_fly:$CI_COMMIT_SHA
+    - docker push ${CI_REGISTRY_IMAGE}/octo_fly:latest
   only:
     - master
     - prod
