@@ -1,5 +1,3 @@
-image: docker:19.03.1
-
 variables:
   # When using dind service, we need to instruct docker, to talk with
   # the daemon started inside of the service. The daemon is available
@@ -22,19 +20,13 @@ variables:
   # container, thanks to volume mount from config.toml
   DOCKER_TLS_CERTDIR: "/certs"
 
-services:
-  - docker:19.03.1-dind
-
-before_script:
-  - docker info
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-
 stages:
   - test
   - build
 
 install_requirements:
   stage: test
+  image: continuumio/miniconda3:latest
   script:
     - conda create --name octo_fly python=3.7 -y
     - export PATH="/usr/share/miniconda/bin:$PATH"
@@ -46,6 +38,7 @@ install_requirements:
 
 run_unit_tests:
   stage: test
+  image: continuumio/miniconda3:latest
   script:
     - export PATH="/usr/share/miniconda/bin:$PATH"
     - source activate octo_fly
@@ -56,6 +49,12 @@ run_unit_tests:
 
 build_images:
   stage: build
+  image: docker:19.03.1
+  services:
+    - docker:19.03.1-dind
+  before_script:
+    - docker info
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker build --tag ${CI_REGISTRY_IMAGE}/octo_fly:$CI_COMMIT_SHA --tag ${CI_REGISTRY_IMAGE}/octo_fly:latest
   only:
