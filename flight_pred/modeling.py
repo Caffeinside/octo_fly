@@ -4,7 +4,7 @@ from typing import Tuple
 import pandas as pd
 from prefect import task, context
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, roc_auc_score
 from sklearn.model_selection import train_test_split
 
 from config import PROJECT_HOME, TARGET_COLUMN, ID_COLUMN, DELAY_THRESHOLD
@@ -14,13 +14,14 @@ from config import PROJECT_HOME, TARGET_COLUMN, ID_COLUMN, DELAY_THRESHOLD
 def train_and_evaluate(flights: pd.DataFrame):
     X_test, X_train, y_test, y_train = create_features_and_target(flights)
     model = train_and_save_model(X_train, y_train)
-    tn, fp, fn, tp = evaluate(X_test, y_test, model)
+    tn, fp, fn, tp, roc_auc = evaluate(X_test, y_test, model)
 
     logger = context.get("logger")
     logger.info(f'True negative   : {tn}')
     logger.info(f'False positive  : {fp}')
     logger.info(f'False negative  : {fn}')
     logger.info(f'True positive   : {tp}')
+    logger.info(f'ROC AUC score   : {roc_auc}')
 
 
 def create_features_and_target(flights: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
@@ -37,10 +38,13 @@ def train_and_save_model(X_train: pd.DataFrame, y_train: pd.Series) -> pickle:
     return model
 
 
-def evaluate(X_test: pd.DataFrame, y_test: pd.Series, model: pickle) -> Tuple[int, int, int, int]:
+def evaluate(X_test: pd.DataFrame, y_test: pd.Series, model: pickle) -> Tuple[int, int, int, int, float]:
     y_predicted = model.predict(X_test)
     tn, fp, fn, tp = confusion_matrix(y_test, y_predicted).ravel()
-    return tn, fp, fn, tp
+
+    y_predicted_auc = model.predict_proba(X_test)
+    roc_auc = roc_auc_score(y_test, y_predicted_auc[:, 1])
+    return tn, fp, fn, tp, roc_auc
 
 
 @task
@@ -53,7 +57,7 @@ def predict_flights_delays(flights_with_new_features: pd.DataFrame, completed_fl
 def get_predictions(flights: pd.DataFrame) -> pd.DataFrame:
     model = pickle.load(open(PROJECT_HOME / 'models/model_15min.pkl', 'rb'))
     predictions = model.predict_proba(flights.drop(columns=[ID_COLUMN]))
-    flights['prediction'] = [prediction[1] for prediction in predictions]
+    flights['prediction'] = predictions[:, 1]
     return flights[[ID_COLUMN, 'prediction']]
 
 
