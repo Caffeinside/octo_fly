@@ -32,7 +32,7 @@ def create_features_and_target(flights: pd.DataFrame) -> Tuple[pd.DataFrame, pd.
 
 
 def train_and_save_model(X_train: pd.DataFrame, y_train: pd.Series) -> pickle:
-    model = RandomForestClassifier(n_estimators=10, max_depth=10, n_jobs=-1, verbose=2, random_state=42)
+    model = RandomForestClassifier(n_estimators=100, max_depth=10, n_jobs=-1, verbose=2, random_state=42)
     model.fit(X_train, y_train)
     pickle.dump(model, open(PROJECT_HOME / f'models/model_{DELAY_THRESHOLD}min.pkl', 'wb'))
     return model
@@ -55,7 +55,7 @@ def predict_flights_delays(flights_with_new_features: pd.DataFrame, completed_fl
 
 
 def get_predictions(flights: pd.DataFrame) -> pd.DataFrame:
-    model = pickle.load(open(PROJECT_HOME / 'models/model_15min.pkl', 'rb'))
+    model = pickle.load(open(PROJECT_HOME / 'models/model_0min.pkl', 'rb'))
     predictions = model.predict_proba(flights.drop(columns=[ID_COLUMN]))
     flights['prediction'] = predictions[:, 1]
     return flights[[ID_COLUMN, 'prediction']]
