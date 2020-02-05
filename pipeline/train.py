@@ -14,10 +14,8 @@ with Flow('train') as train:
     fuel = get_fuel_data(FUEL)
 
     completed_flights = aggregate_data(flights, airlines, airports, fuel)
-
     flights_with_new_features = prepare_features(completed_flights, workflow_mode='train')
-
-    model = train_and_evaluate(flights_with_new_features)
+    train_and_evaluate(flights_with_new_features)
 
 if __name__ == '__main__':
     train.run()
