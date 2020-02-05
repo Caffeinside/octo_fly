@@ -19,7 +19,7 @@ Project Organization
     │
     │
     ├── deploy
-    │   └── pipeline.yml                <- CI/CD pipeline
+    │   └── azure-pipeline.yml          <- CI/CD pipeline
     │   
     │
     ├── docker
@@ -49,8 +49,6 @@ Project Organization
     │   └── example.py
     │
     └── tests                           <- Unit and integrations tests
-        └── test_example.py
-
 
 --------
 
