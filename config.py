@@ -1,6 +1,6 @@
-import pathlib
+from pathlib import Path
 
-PROJECT_HOME = pathlib.Path(__file__).parent.absolute()
+PROJECT_HOME = Path(__file__).parent.absolute()
 
 POSSIBLE_LEAK_COLUMNS = ['heure_de_depart', 'retart_de_depart', 'temps_de_deplacement_a_terre_au_decollage',
                          'decollage', 'temps_de_vol', 'temps_passe', 'atterrissage',
@@ -26,6 +26,6 @@ TRAIN_COLUMNS_TO_DROP = POSSIBLE_LEAK_COLUMNS + DUPLICATED_DATA + CATEGORICAL_CO
 # TODO: to delete once we are connected to real data
 PREDICT_COLUMNS_TO_DROP = TRAIN_COLUMNS_TO_DROP + [TARGET_COLUMN]
 
-DB_BATCH_1 = '../data/raw/batch_1.db'
-DB_BATCH_2 = '../data/raw/batch_2.db'
-FUEL = '../data/raw/fuel.parquet'
+DB_BATCH_1 = PROJECT_HOME / 'data/raw/batch_1.db'
+DB_BATCH_2 = PROJECT_HOME / 'data/raw/batch_2.db'
+FUEL = PROJECT_HOME / 'data/raw/fuel.parquet'

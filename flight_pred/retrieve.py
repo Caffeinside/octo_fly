@@ -3,8 +3,6 @@ import sqlite3
 import pandas as pd
 from prefect import task
 
-# TODO: can we include DB connections in prefect?
-
 
 @task
 def get_flights_data(db_1_path: str, db_2_path: str) -> pd.DataFrame:

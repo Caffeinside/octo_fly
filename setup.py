@@ -13,6 +13,7 @@ setup(
                       'prefect==0.9.1',
                       'streamlit==0.54.0',
                       'scikit-learn==0.19.2',
-                      'scipy'],
+                      'scipy==1.4.1',
+                      'pyarrow==0.12.1'],
     extras_require={'tests': ['pytest']}
 )
