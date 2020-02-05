@@ -13,12 +13,12 @@ schedule = IntervalSchedule(interval=timedelta(minutes=15))
 
 with Flow('predict', schedule) as predict:
 
-    flights = get_flights_data(DB_BATCH_1, DB_BATCH_2)
+    flights = get_flights_data(DB_BATCH_1, DB_BATCH_2, workflow_mode='predict')
     airports = get_airports_data(DB_BATCH_2)
     airlines = get_airlines_data(DB_BATCH_2)
     fuel = get_fuel_data(FUEL)
 
-    completed_flights = aggregate_data(flights, airlines, airports, fuel, workflow_mode='predict')
+    completed_flights = aggregate_data(flights, airlines, airports, fuel)
 
     flights_with_new_features = prepare_features(completed_flights, workflow_mode='predict')
 

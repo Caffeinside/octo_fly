@@ -6,7 +6,7 @@ from prefect import task
 
 @task
 def aggregate_data(flights: pd.DataFrame, airlines: pd.DataFrame, airports: pd.DataFrame,
-                   fuel: pd.DataFrame, workflow_mode='train') -> pd.DataFrame:
+                   fuel: pd.DataFrame) -> pd.DataFrame:
 
     flights_new_col = rename_dataframe_columns(flights)
     airlines_new_col = rename_dataframe_columns(airlines, 'compagnies_')
@@ -21,10 +21,6 @@ def aggregate_data(flights: pd.DataFrame, airlines: pd.DataFrame, airports: pd.D
     flights_with_departures = merge_flights_with_departures_airports(flights_with_airlines, departures_airports)
     flights_with_arrivals = merge_flights_with_arrivals_airports(flights_with_departures, arrivals_airports)
     flights_data = merge_flights_with_fuel(flights_with_arrivals, fuel_time_series)
-
-    # TODO to simulate predictions
-    if workflow_mode == 'predict':
-        flights_data = flights_data.tail(50)
 
     return flights_data
 
