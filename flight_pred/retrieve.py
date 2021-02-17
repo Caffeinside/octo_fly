@@ -15,8 +15,8 @@ def get_flights_data(db_1_path: str, db_2_path: str, workflow_mode: str = 'train
 
     # FIXME to simulate predictions
     if workflow_mode == 'predict':
+        flights = flights.sample(50)
         flights = flights.sort_values(['DATE', 'DEPART PROGRAMME'], ascending=[True, True])
-        flights = flights.tail(50)
 
     return flights
 
