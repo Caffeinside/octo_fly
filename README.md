@@ -8,7 +8,7 @@ data science solution that can predict flights' delays based on historical data 
 candidate not to focus on creating a performing ML model (the data is fake and doesn't contain signal), but rather 
 to propose an elegant end-to-end solution that could be deployed in production.
 
-_*Disclaimer*: As no additional data source was provided for the prediction part, the current prediction workflow simulates
+_**Disclaimer**: As no additional data source was provided for the prediction part, the current prediction workflow simulates
 the existence of such data by predicting flight delays every 15min based on a random batch of 50 examples extracted from
 the training data. Of course, it wouldn't be the case in a real-world project!_
 
@@ -40,6 +40,7 @@ Launch the [Streamlit](https://www.streamlit.io/) app and the orchestrated batch
 docker-compose -f docker/docker-compose-dev.yml up
 ```
 
-Et voilà! The data will be updated every 15min with the last predictions.
+**Et voilà!** You can check the web app at http://localhost:8501. 
+The results will be updated every 15min with the last predictions.
 
 ![alt text](./docs/app_preview.png)
